@@ -1,57 +1,84 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PropsFormikLogin, ResponseAuth } from "@/interfaces/Auth";
+import { LoginSchema } from "@/schemas/LoginSchema";
+import { Loader2 } from "lucide-react";
 
-const Login = async (email: string, password: string) => {
-  const apiUrl = process.env.API_URL;
-  const response = await fetch(`${apiUrl}/users/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email,
-      password,
-    }),
-  }).then((response) => response.json());
-  return response;
-};
+import {
+  validateFormikField,
+  validateFormikFieldMessage,
+} from "@/utils/validationFormik";
+import { useFormik } from "formik";
+import { useServices } from "@/hooks/useServices";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 
 export const FormLogin = () => {
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const email = (document.getElementById("email") as HTMLInputElement).value;
-    const password = (document.getElementById("password") as HTMLInputElement)
-      .value;
-    const response = await Login(email, password);
+  const router = useRouter();
+  const [dataLogin, setDataLogin] = useState<ResponseAuth>(null as unknown as ResponseAuth);
 
-    console.log(response);
-  };
+  const { fetchLogin, isError, isLoading, isSuccess } = useServices<PropsFormikLogin, ResponseAuth>();
+
+  const formik = useFormik<PropsFormikLogin>({
+    initialValues: {
+      email: "",
+      password: "",
+
+    },
+    validationSchema: LoginSchema,
+    onSubmit: async (values) => {
+      const response = await fetchLogin(values);
+      setDataLogin(response)
+    },
+  });
+
+  useEffect(() => {
+    if (isSuccess && dataLogin) {
+      localStorage.setItem('token', dataLogin.token);
+      router.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, dataLogin])
+
   return (
     <div className="flex flex-col items-center justify-center  gap-5">
       <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight">
         Iniciar sesión
       </h1>
-      <form className="flex flex-col">
+      <div className="flex flex-col">
         <Input
           className="mb-2"
-          id={"email"}
           type="email"
           placeholder="Correo"
+          name="email"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.email}
+          error={validateFormikField("email", formik)}
+          errorMessage={validateFormikFieldMessage("email", formik)}
         />
         <Input
-          className="mb-4"
-          id={"password"}
+          className="mb-2"
           type="password"
           placeholder="Contraseña"
+          name="password"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.password}
+          error={validateFormikField("password", formik)}
+          errorMessage={validateFormikFieldMessage("password", formik)}
         />
         <Button
-          onClick={(e) => {
-            handleLogin(e);
+          disabled={isLoading}
+          onClick={() => {
+            formik.handleSubmit();
           }}
         >
-          Ingresar
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Registrarse
         </Button>
-      </form>
+      </div>
     </div>
   );
 };
