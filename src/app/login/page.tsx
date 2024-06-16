@@ -1,9 +1,12 @@
+import { LoginAuth } from "@/components/Auth/LoginAuth";
 
 
 const Login = () => {
   return (
-    <div>Login</div>
-  )
-}
+    <>
+      <LoginAuth />
+    </>
+  );
+};
 
-export default Login
+export default Login;
