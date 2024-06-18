@@ -1,3 +1,4 @@
+'useClient'
 import { useState } from "react";
 
 export const useServices = <T, R>() => {
@@ -22,6 +23,8 @@ export const useServices = <T, R>() => {
             .then((response) => {
                 if (response.ok) {
                     setIsSuccess(true);
+                }else{
+                    setIsError(true);
                 }
                 return response.json()
             })

@@ -1,8 +1,11 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PropsFormikLogin, ResponseAuth } from "@/interfaces/Auth";
 import { LoginSchema } from "@/schemas/LoginSchema";
 import { Loader2 } from "lucide-react";
+import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/components/ui/use-toast"
 
 import {
   validateFormikField,
@@ -12,6 +15,7 @@ import { useFormik } from "formik";
 import { useServices } from "@/hooks/useServices";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from 'js-cookie';
 
 
 export const FormLogin = () => {
@@ -19,6 +23,7 @@ export const FormLogin = () => {
   const [dataLogin, setDataLogin] = useState<ResponseAuth>(null as unknown as ResponseAuth);
 
   const { fetchLogin, isError, isLoading, isSuccess } = useServices<PropsFormikLogin, ResponseAuth>();
+  const { toast } = useToast();
 
   const formik = useFormik<PropsFormikLogin>({
     initialValues: {
@@ -35,11 +40,24 @@ export const FormLogin = () => {
 
   useEffect(() => {
     if (isSuccess && dataLogin) {
-      localStorage.setItem('token', dataLogin.token);
-      router.push('/');
+      Cookies.set('token', dataLogin.token);
+      router.push('/dashboard');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess, dataLogin])
+  }, [isSuccess, dataLogin]);
+
+  useEffect(() => {
+    if (isError) {
+      toast({
+        variant: "destructive",
+        title: "Error al iniciar sesión",
+        description: "Por favor, verifica tus credenciales e intenta de nuevo.",
+        action: <ToastAction altText="Try again">Entendido</ToastAction>,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isError]);
+
 
   return (
     <div className="flex flex-col items-center justify-center  gap-5">

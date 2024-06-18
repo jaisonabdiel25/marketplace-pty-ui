@@ -9,12 +9,15 @@ import { RegisterSchema } from "@/schemas/RegisterSchema";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/components/ui/use-toast"
 
 export const FormRegister = () => {
   const router = useRouter();
   const [dataLogin, setDataLogin] = useState<ResponseAuth>(null as unknown as ResponseAuth);
 
   const { fetchRegister, isError, isLoading, isSuccess } = useServices<PropsFormikRegister, ResponseAuth>();
+  const { toast } = useToast();
 
   const formik = useFormik<PropsFormikRegister>({
     initialValues: {
@@ -35,10 +38,23 @@ export const FormRegister = () => {
   useEffect(() => {
     if (isSuccess && dataLogin) {
       localStorage.setItem('token', dataLogin.token);
-      router.push('/');
+      router.push('/dashboard');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess, dataLogin])
+  }, [isSuccess, dataLogin]);
+
+  useEffect(() => {
+    if (isError) {
+      toast({
+        variant: "destructive",
+        title: "Error al registrarse",
+        description: "Contactar con el administrador del sistema.",
+        action: <ToastAction altText="Try again">Entendido</ToastAction>,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isError]);
+
 
   return (
     <div className="flex flex-col items-center justify-center  gap-5">
