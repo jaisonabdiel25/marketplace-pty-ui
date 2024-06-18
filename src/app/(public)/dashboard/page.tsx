@@ -1,15 +1,14 @@
 
-import { useServicesProduct } from '@/hooks/useServicesProduct';
+
+import { ProductCard } from '@/components/product/ProductCard';
 import React from 'react'
 
 const DashboardPage = async () => {
 
-    const { getProducts } = useServicesProduct();
-
-    const data = await getProducts();
-
     return (
-        <div>{JSON.stringify(data)}</div>
+        <div>
+            <ProductCard/>
+        </div>
     )
 }
 
