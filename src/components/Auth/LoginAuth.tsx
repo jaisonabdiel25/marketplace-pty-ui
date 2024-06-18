@@ -6,6 +6,7 @@ import { FormLogin } from "./FormLogin";
 import { FormRegister } from "./FormRegister";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+
 enum Tab {
   Login = "login",
   Register = "register",
@@ -18,7 +19,7 @@ export const LoginAuth = () => {
     <div className="h-screen flex justify-center items-center bg-gray-200">
       <div className="flex gap-20 shadow-2xl p-10 bg-white rounded-sm min-h-[500px]">
         <div className="flex justify-center items-center">
-          <Image src="./logo.svg" alt="logo" width={300} height={300} />
+          <Image priority={false} src="./logo.svg" alt="logo" width={300} height={300} />
         </div>
 
         <Tabs defaultValue={register} className="flex flex-col">
@@ -48,7 +49,6 @@ export const LoginAuth = () => {
               <FormRegister />
             </TabsContent>
           </div>
-
         </Tabs>
       </div>
     </div>
