@@ -16,6 +16,7 @@ import { useServices } from "@/hooks/useServices";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from 'js-cookie';
+import { useUserStore } from "@/store/user.store";
 
 
 export const FormLogin = () => {
@@ -24,6 +25,7 @@ export const FormLogin = () => {
 
   const { fetchLogin, isError, isLoading, isSuccess } = useServices<PropsFormikLogin, ResponseAuth>();
   const { toast } = useToast();
+  const setUserInfo = useUserStore (state => state.setUserInfo);
 
   const formik = useFormik<PropsFormikLogin>({
     initialValues: {
@@ -40,6 +42,7 @@ export const FormLogin = () => {
 
   useEffect(() => {
     if (isSuccess && dataLogin) {
+      setUserInfo(dataLogin.data);
       Cookies.set('token', dataLogin.token);
       router.push('/dashboard');
     }

@@ -10,6 +10,8 @@ export interface ProductResponse {
     createById: string;
     categoryId: string;
     images: Image[];
+    createBy?: CreateBy;
+    category?: Category;
 }
 
 export interface Image {
@@ -17,4 +19,20 @@ export interface Image {
     url: string;
     productId: string;
     createAt: Date;
+}
+
+export interface Category {
+    id: string;
+    description: string;
+}
+
+export interface CreateBy {
+    id: string;
+    email: string;
+    name: string;
+    firstName: string;
+    img: null;
+    createAt: Date;
+    phone: null;
+    active: boolean;
 }

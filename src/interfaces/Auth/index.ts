@@ -13,11 +13,11 @@ export interface PropsFormikRegister {
 
 
 export interface ResponseAuth {
-    data: DataLogin;
+    data: UserInfo;
     token: string;
 }
 
-export interface DataLogin {
+export interface UserInfo {
     id: string;
     name: string;
     firstName: string;

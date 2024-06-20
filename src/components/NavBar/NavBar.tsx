@@ -1,20 +1,25 @@
+'use client'
 import Image from "next/image"
 import { Input } from "../ui/input"
 import { NavBarButtoms } from "./NavBarButtoms"
+import Link from "next/link"
+import { useAuthorization } from "@/hooks/useAuthorization"
 
 
 export const NavBar = () => {
+
     return (
         <>
             <nav
                 className="relative flex w-full flex-wrap items-center justify-between bg-zinc-100 shadow-dark-mild dark:bg-neutral-700 "
                 data-twe-navbar-ref>
                 <div className="flex w-full flex-wrap items-center justify-between px-3">
-                    <div>
-                        <a className="mx-2 my-1 flex items-center lg:mb-0 lg:mt-0" href="#">
+
+                    <Link className="mx-2 my-1 flex items-center lg:mb-0 lg:mt-0" href={`/dashboard`}>
+                        <div>
                             <Image src="./logo.svg" alt="logo" width={100} height={100} />
-                        </a>
-                    </div>
+                        </div>
+                    </Link>
 
                     <button
                         className="block border-0 bg-transparent px-2 text-black/50 hover:no-underline hover:shadow-none focus:no-underline focus:shadow-none focus:outline-none focus:ring-0 dark:text-neutral-200 lg:hidden"

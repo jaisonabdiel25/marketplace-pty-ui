@@ -1,13 +1,15 @@
 
 import { cookies } from 'next/headers';
+import { jwtDecode } from "jwt-decode";
+import { UserInfo } from '@/interfaces/Auth';
 
 export const useServicesProduct = <T, R>() => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     const getToken = (): string => {
         const cookiesStore = cookies();
-        const token2 = cookiesStore.get('token');
-        return token2?.value ?? '';
+        const token = cookiesStore.get('token');
+        return token?.value ?? '';
     }
 
     const fetchApi = async (url: string, body = null, method = 'GET'): Promise<R> => {
@@ -40,7 +42,18 @@ export const useServicesProduct = <T, R>() => {
         return await fetchApi(`${apiUrl}/products`);
     }
 
+    const getProduct = async (id: string): Promise<R> => {
+        return await fetchApi(`${apiUrl}/products/${id}`);
+    }
+
+    const decodedToken =  (): UserInfo => {
+        const token = getToken();
+       return jwtDecode<UserInfo>(token)
+    }
+
     return {
-        getProducts
+        getProducts,
+        getProduct,
+        decodedToken
     }
 }
