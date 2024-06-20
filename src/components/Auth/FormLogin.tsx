@@ -44,6 +44,7 @@ export const FormLogin = () => {
     if (isSuccess && dataLogin) {
       setUserInfo(dataLogin.data);
       Cookies.set('token', dataLogin.token);
+      localStorage.setItem('token', dataLogin.token);
       router.push('/dashboard');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
