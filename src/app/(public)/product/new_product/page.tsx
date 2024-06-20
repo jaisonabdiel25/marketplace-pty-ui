@@ -1,8 +1,9 @@
-import React from 'react'
+
+import { CreateProductFrom } from '@/components/product/createProduct/CreateProductFrom'
 
 const Newproduct = () => {
     return (
-        <div>page</div>
+        <CreateProductFrom />
     )
 }
 

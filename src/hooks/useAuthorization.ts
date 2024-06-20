@@ -1,3 +1,4 @@
+
 import { cookies } from 'next/headers';
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { UserInfo } from '@/interfaces/Auth';
@@ -20,6 +21,11 @@ export const useAuthorization = () => {
         } else {
             return true;
         }
+    }
+
+    const resetAuthorization = () => {
+        const cookiesStore = cookies();
+        cookiesStore
     }
 
     return {
