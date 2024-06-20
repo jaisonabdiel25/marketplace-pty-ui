@@ -3,7 +3,7 @@ import { ProductResponse } from '@/interfaces/Products';
 import { ProductItem } from './ProductItem';
 
 
-export const ProductCard = async () => {
+export const ProductGrid = async () => {
 
   const { getProducts } = useServicesProduct<unknown, ProductResponse[]>();
 
@@ -11,7 +11,7 @@ export const ProductCard = async () => {
 
   return (
     <div className='flex flex-wrap justify-center gap-8 mt-8' >
-      {data.map((product) => (
+      {data?.length > 0 && data.map((product) => (
         <>
           <ProductItem key={product.id} product={product} />
         </>

@@ -1,13 +1,13 @@
 
 
-import { ProductCard } from '@/components/product/ProductCard';
+import { ProductGrid } from '@/components/product/ProductGrid';
 import React from 'react'
 
-const DashboardPage = async () => {
+const DashboardPage = () => {
 
     return (
         <div>
-            <ProductCard/>
+            <ProductGrid/>
         </div>
     )
 }
