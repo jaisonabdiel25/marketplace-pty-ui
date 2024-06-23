@@ -12,9 +12,9 @@ export const ProductItem = (props: Props) => {
   const { product } = props;
   return (
     <>
-      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col justify-between">
+      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col justify-between min-h-[400px] flex-0">
         <div className='flex justify-center items-center'>
-          <Image src={product.images[0].url} width={500} height={500} alt={product.name} className='max-h-[300px] object-contain' />
+          <Image src={product.images[0].url} width={500} height={500} alt={product.name} className='max-h-[300px] object-contain items-center flex justify-center' />
         </div>
 
         <div className=" flex flex-col px-5 pb-5 mt-8">

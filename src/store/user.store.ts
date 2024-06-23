@@ -1,20 +1,13 @@
-
-import { UserInfo } from "@/interfaces/Auth";
 import { create } from "zustand";
 
-interface Props extends UserInfo {
-    setUserInfo: (userInfo: UserInfo) => void;
-    clearUserInfo: () => void;
+interface Props {
+    token: string;
+    setToken: (token: string) => void;
+    clearToken: () => void;
 }
 
 export const useUserStore = create<Props>()((set) => ({
-    id: '',
-    name: '',
-    firstName: '',
-    email: '',
-    active: false,
-    phone: '',
-    img: '',
-    setUserInfo: (userInfo: UserInfo) => set(userInfo),
-    clearUserInfo: () => set({ id: '', name: '', firstName: '', email: '', active: false, phone: '', img: '' })
+    token: '',
+    setToken: (value: string) => set(state => ({ token: state.token = value})),
+    clearToken: () => set({ token: ''})
 }));

@@ -2,9 +2,13 @@ import Image from "next/image"
 import { Input } from "../ui/input"
 import { NavBarButtoms } from "./NavBarButtoms"
 import Link from "next/link"
+import { cookies } from 'next/headers';
 
 
 export const NavBar = () => {
+
+    const cookieStore = cookies();
+    const token = cookieStore.get('token')?.value;
 
     return (
         <>
@@ -45,13 +49,15 @@ export const NavBar = () => {
                         id="navbarSupportedContent4"
                         data-twe-collapse-item>
 
-                        <div className="w-full px-4">
+                        <div className="flex-1">
                             <Input className="text-bold" placeholder="Buscar productos por nombre, descripción..." />
                         </div>
+                        <div className="px-2">
 
-                        <NavBarButtoms />
-
+                        <NavBarButtoms token={token} />
+                        </div>
                     </div>
+
                 </div>
             </nav>
         </>
