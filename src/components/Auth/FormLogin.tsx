@@ -25,7 +25,7 @@ export const FormLogin = () => {
 
   const { fetchLogin, isError, isLoading, isSuccess } = useServices<PropsFormikLogin, ResponseAuth>();
   const { toast } = useToast();
-  const setUserInfo = useUserStore (state => state.setUserInfo);
+  const setToken = useUserStore (state => state.setToken);
 
   const formik = useFormik<PropsFormikLogin>({
     initialValues: {
@@ -42,9 +42,8 @@ export const FormLogin = () => {
 
   useEffect(() => {
     if (isSuccess && dataLogin) {
-      setUserInfo(dataLogin.data);
+      setToken(dataLogin.token);
       Cookies.set('token', dataLogin.token);
-      localStorage.setItem('token', dataLogin.token);
       router.push('/dashboard');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -98,7 +97,7 @@ export const FormLogin = () => {
           }}
         >
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Registrarse
+          Iniciar sesión
         </Button>
       </div>
     </div>
