@@ -12,9 +12,10 @@ interface Props {
     children: React.ReactNode;
     onAction: () => void;
     onCancel: () => void;
+    disabledAction?: boolean
 }
 
-export const CustomCardForm = ({ children, onAction, onCancel }: Props) => {
+export const CustomCardForm = ({ children, onAction, onCancel, disabledAction = false }: Props) => {
     return (
         <div>
 
@@ -29,6 +30,7 @@ export const CustomCardForm = ({ children, onAction, onCancel }: Props) => {
                 <CardFooter className="flex justify-between">
                     <Button onClick={() => onCancel()} variant="outline">Cancelar</Button>
                     <Button
+                        disabled={disabledAction}
                         onClick={() => onAction()}
                     >
                         Crear

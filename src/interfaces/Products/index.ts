@@ -9,7 +9,7 @@ export interface ProductResponse {
     active: boolean;
     createById: string;
     categoryId: string;
-    images?: Image[];
+    images: Image[];
     createBy?: CreateBy;
     category?: Category;
 }
@@ -43,11 +43,10 @@ export interface PropsFormikProducts {
     description: string;
     categoryId: string;
     price: number;
-    images: File[];
+    images: File[] | string[] | object;
 }
 
 export interface RequestProduct {
-    file: FormData
     name: string;
     description: string;
     categoryId: string;

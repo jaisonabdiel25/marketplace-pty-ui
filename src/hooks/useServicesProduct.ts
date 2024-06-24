@@ -2,8 +2,10 @@
 import { cookies } from 'next/headers';
 import { jwtDecode } from "jwt-decode";
 import { UserInfo } from '@/interfaces/Auth';
+import { Category } from '@/interfaces/Products';
+import { GlobalResponse } from '@/interfaces/global';
 
-export const useServicesProduct = <T, R>() => {
+export const useServicesProduct = () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     const getToken = (): string => {
@@ -12,7 +14,7 @@ export const useServicesProduct = <T, R>() => {
         return token?.value ?? '';
     }
 
-    const fetchApi = async (url: string, body = null, method = 'GET'): Promise<R> => {
+    const fetchApi = async (url: string, body = null, method = 'GET') => {
 
         const token = getToken();
 
@@ -35,14 +37,14 @@ export const useServicesProduct = <T, R>() => {
             })
 
 
-        return await response as R;
+        return await response;
     }
 
-    const getProducts = async (): Promise<R> => {
+    const getProducts = async <R>(): Promise<R> => {
         return await fetchApi(`${apiUrl}/products`);
     }
 
-    const getProduct = async (id: string): Promise<R> => {
+    const getProduct = async <R>(id: string): Promise<R> => {
         return await fetchApi(`${apiUrl}/products/${id}`);
     }
 
@@ -51,9 +53,14 @@ export const useServicesProduct = <T, R>() => {
        return jwtDecode<UserInfo>(token)
     }
 
+    const getCategories = async(): Promise<GlobalResponse<Category[]>> => {
+        return await fetchApi(`${apiUrl}/categories`);
+    }
+
     return {
         getProducts,
         getProduct,
-        decodedToken
+        decodedToken,
+        getCategories,
     }
 }
