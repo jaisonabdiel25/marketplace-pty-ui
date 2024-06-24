@@ -5,11 +5,10 @@ import { ProductResponse } from '@/interfaces/Products';
 const ProductPage = async ({ params }: { params: { id: string } }) => {
     const { id } = params;
 
-    const { getProduct } = useServicesProduct<unknown, ProductResponse>();
+    const { getProduct} = useServicesProduct();
 
-    const product = await getProduct(id);
-
-
+    const product = await getProduct<ProductResponse>(id);
+    
     return (
         <>
             {product && <ProductDetail product={product} />}

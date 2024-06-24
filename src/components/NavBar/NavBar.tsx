@@ -3,6 +3,7 @@ import { Input } from "../ui/input"
 import { NavBarButtoms } from "./NavBarButtoms"
 import Link from "next/link"
 import { cookies } from 'next/headers';
+import { SheetSide } from "../Customs/CustomSheetSide";
 
 
 export const NavBar = () => {
@@ -23,26 +24,10 @@ export const NavBar = () => {
                         </div>
                     </Link>
 
-                    <button
-                        className="block border-0 bg-transparent px-2 text-black/50 hover:no-underline hover:shadow-none focus:no-underline focus:shadow-none focus:outline-none focus:ring-0 dark:text-neutral-200 lg:hidden"
-                        type="button"
-                        data-twe-collapse-init
-                        data-twe-target="#navbarSupportedContent4"
-                        aria-controls="navbarSupportedContent4"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span
-                            className="[&>svg]:w-7 [&>svg]:stroke-black/50 dark:[&>svg]:stroke-neutral-200">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="currentColor">
-                                <path
-                                    d="M3 6.75A.75.75 0 013.75 6h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 6.75zM3 12a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 12zm0 5.25a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z"
-                                />
-                            </svg>
-                        </span>
-                    </button>
+                    <div className="block border-0 bg-transparent px-2 text-black/50 hover:no-underline hover:shadow-none focus:no-underline focus:shadow-none focus:outline-none focus:ring-0 dark:text-neutral-200 lg:hidden">
+
+                        <SheetSide side={'right'} />
+                    </div>
 
                     <div
                         className="!visible mt-2 hidden flex-grow basis-[100%] items-center justify-between lg:mt-0 lg:!flex lg:basis-auto px-8"
@@ -53,8 +38,7 @@ export const NavBar = () => {
                             <Input className="text-bold" placeholder="Buscar productos por nombre, descripción..." />
                         </div>
                         <div className="px-2">
-
-                        <NavBarButtoms token={token} />
+                            <NavBarButtoms token={token} />
                         </div>
                     </div>
 

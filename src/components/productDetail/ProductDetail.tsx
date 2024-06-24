@@ -1,14 +1,13 @@
+
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
+
 import { ProductResponse } from '@/interfaces/Products'
 import { Card, CardContent } from "@/components/ui/card"
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "@/components/ui/carousel"
-import { ProductDetailAction } from './ProductDetailAction'
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, } from "@/components/ui/carousel"
+import { Suspense } from 'react'
+
+const DynamicProductDetailAction = dynamic(() => import("./ProductDetailAction"), { ssr: false });
 
 interface Props {
     product: ProductResponse
@@ -38,7 +37,9 @@ export const ProductDetail = ({ product }: Props) => {
                 </Carousel>
             </div>
 
-            <ProductDetailAction product={product} />
+            <Suspense fallback={<div className='w-full h-screen flex items-center justify-center bg-red-800'> cargando</div>} >
+                <DynamicProductDetailAction product={product} />
+            </Suspense>
         </div>
     )
 }

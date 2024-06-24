@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { UserInfo } from "@/interfaces/Auth";
 import { useMemo } from "react";
 import Cookies from 'js-cookie';
+import { SheetSide } from "../Customs/CustomSheetSide";
 
 export type customJwtPayload = JwtPayload & { data: UserInfo };
 
@@ -58,6 +59,7 @@ export const NavBarButtoms = ({ token }: Props) => {
                         </svg>
                     </Link>
 
+                    <SheetSide side={'right'} />
                 </div>
                 :
                 <div className="flex items-center">

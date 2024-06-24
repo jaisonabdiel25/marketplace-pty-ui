@@ -1,59 +1,110 @@
 'use client'
-import { Input } from '@/components/ui/input'
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
-import { Label } from "@/components/ui/label"
-
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { Button } from '@/components/ui/button'
-import { validateFormikField, validateFormikFieldMessage } from '@/utils/validationFormik'
-import { ProductResponse, PropsFormikProducts } from '@/interfaces/Products'
-import { useServicesProductAction } from '@/hooks/useServicesProductAction'
-import { GlobalResponse } from '@/interfaces/global'
-import { CustomCardForm } from '@/components/Customs/CustomCardForm'
-import { CustomAlert } from '@/components/Customs/CustomAlert'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-export const CreateProductFrom = () => {
+import { Label } from "@/components/ui/label"
+import { Input } from '@/components/ui/input'
+import { validateFormikField, validateFormikFieldMessage } from '@/utils/validationFormik'
+import { Category, ProductResponse, PropsFormikProducts, RequestProduct } from '@/interfaces/Products'
+import { useServicesProductAction } from '@/hooks/useServicesProductAction'
+import { GlobalResponse, GlobalSelect } from '@/interfaces/global'
+import { CustomCardForm } from '@/components/Customs/CustomCardForm'
+import { CustomAlert } from '@/components/Customs/CustomAlert'
+import { ProductSchema } from '@/schemas/ProductSchema'
+import { CustomSelect } from '@/components/Customs/CustomSelect'
+
+interface Props {
+    categories: Category[]
+    product?: ProductResponse
+}
+
+export const CreateProductFrom = (props: Props) => {
+
+    const { product, categories } = props
+
+    const selectCategories = useMemo(() => {
+        return categories?.map(item => ({
+            id: item.id,
+            label: item.description,
+            value: item
+        }))
+    }, [categories])
 
     const router = useRouter();
-    const { createProductApi } = useServicesProductAction();
-    const [responsePost, setResponsePost] = useState<GlobalResponse<ProductResponse>>(null as unknown as GlobalResponse<ProductResponse>);
+    const { createProductApi, updateProductApi } = useServicesProductAction();
+    const [responsePost, setResponsePost] = useState<ProductResponse>(null as unknown as ProductResponse);
 
-    const formik = useFormik<PropsFormikProducts>({
-        initialValues: {
+    const initialValues = (): PropsFormikProducts => {
+
+        if (product) {
+            return {
+                id: product.id,
+                name: product.name,
+                description: product.description,
+                categoryId: product.category!.id,
+                price: Number(product.price),
+                images: {}
+            }
+        }
+        return {
+            id: '',
             name: '',
             description: '',
             price: 0,
-            categoryId: '662bd8bc-94a4-4a49-9b96-df125afa26f4',
-            images: []
-        },
-        onSubmit: async (values) => {
-            const formData = new FormData();
+            categoryId: '',
+            images: {}
+        }
 
-            for (const file of values.images) {
-                formData.append('file', file);
+    }
+
+    const formik = useFormik<PropsFormikProducts>({
+        initialValues: initialValues(),
+        validationSchema: ProductSchema,
+        onSubmit: async (values) => {
+
+            if (formik.values.id) {
+
+                const request: RequestProduct = {
+                    name: values.name,
+                    description: values.description,
+                    price: values.price,
+                    categoryId: values.categoryId
+                }
+
+                await updateProductApi(product?.id ?? responsePost.id, request, 'PATCH');
+
+            } else {
+                const formData = new FormData();
+
+                for (const file of values.images as File[]) {
+                    formData.append('file', file);
+                }
+                formData.append('name', values.name);
+                formData.append('description', values.description);
+                formData.append('price', values.price.toString());
+                formData.append('categoryId', values.categoryId);
+
+                const result = await createProductApi(formData, 'POST');
+                setResponsePost(result.data);
+                formik.setFieldValue('id', result.data.id);
             }
 
-            formData.append('name', values.name);
-            formData.append('description', values.description);
-            formData.append('price', values.price.toString());
-            formData.append('categoryId', '662bd8bc-94a4-4a49-9b96-df125afa26f4');
-
-            const result = await createProductApi(formData, 'POST');
-            setResponsePost(result)
-
         }
-    })
+    });
+
+    const validateImageLoad = (): boolean => {
+        if (Object.keys(formik.values.images).length == 0 && formik.touched.images && !formik.values.id) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+
     return (
         <div className='flex justify-center w-full mt-20'>
-            <CustomCardForm onAction={() => formik.handleSubmit()} onCancel={() => formik.resetForm()}>
+            <CustomCardForm onAction={() => formik.handleSubmit()} onCancel={() => formik.resetForm()} disabledAction={validateImageLoad()}>
                 <form>
                     <div className="grid w-full items-center gap-4">
                         <div className='flex gap-4 my-2'>
@@ -100,21 +151,17 @@ export const CreateProductFrom = () => {
                         </div>
                         <div className="flex flex-col space-y-1.5">
                             <Label htmlFor="categoryId">Categoría</Label>
-                            <Select defaultValue='astro' value={formik.values.categoryId}>
-                                <SelectTrigger id="framework">
-                                    <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent position="popper">
-                                    <SelectItem value="next">Next.js</SelectItem>
-                                    <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                                    <SelectItem value="astro">Astro</SelectItem>
-                                    <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <CustomSelect
+                                name={'categoryId'}
+                                options={selectCategories}
+                                value={formik.values.categoryId}
+                                onChange={(value: string) => formik.setFieldValue('categoryId', value)}
+                            />
                         </div>
                         <div className='grid w-full items-center gap-4'>
                             <Label htmlFor="images">Imagenes</Label>
                             <Input
+                                disabled={!!formik.values.id}
                                 className="mb-2"
                                 placeholder="Imagenes"
                                 type='file'
@@ -122,23 +169,24 @@ export const CreateProductFrom = () => {
                                 onChange={(e) => {
                                     const files = e.target.files
                                     formik.setFieldValue("images", files)
+
                                 }}
                                 onBlur={formik.handleBlur}
                                 multiple
                                 accept='image/*'
-                                error={validateFormikField("images", formik)}
-                                errorMessage={validateFormikFieldMessage("imagimageses", formik)}
+                                error={validateImageLoad()}
+                                errorMessage={"las imagenes son requeridas"}
                             />
                         </div>
                     </div>
                 </form>
-                {responsePost && 
-                <CustomAlert
-                    message={'Producto creado con exito'}
-                    action={() => router.push(`/product/${responsePost?.data?.id}`)}
-                    textButon='Ver producto'
-                    noTimeOut
-                />}
+                {responsePost &&
+                    <CustomAlert
+                        message={'Producto creado con exito'}
+                        action={() => router.push(`/product/${responsePost?.id}`)}
+                        textButon='Ver producto'
+                        noTimeOut
+                    />}
 
             </CustomCardForm>
 
