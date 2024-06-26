@@ -32,7 +32,7 @@ export const CreateProductFrom = (props: Props) => {
     }, [categories])
 
     const router = useRouter();
-    const { createProductApi, updateProductApi } = useServicesProductAction();
+    const { createProductApi, updateProductApi, message, isError, isSuccess } = useServicesProductAction();
     const [responsePost, setResponsePost] = useState<ProductResponse>(null as unknown as ProductResponse);
 
     const initialValues = (): PropsFormikProducts => {
@@ -100,6 +100,10 @@ export const CreateProductFrom = (props: Props) => {
             return false
         }
     }
+
+    useEffect(() => {
+        console.log(isSuccess)
+    }, [isSuccess])
 
 
     return (
@@ -180,13 +184,15 @@ export const CreateProductFrom = (props: Props) => {
                         </div>
                     </div>
                 </form>
-                {responsePost &&
-                    <CustomAlert
-                        message={'Producto creado con exito'}
+                {isSuccess &&
+                    (<CustomAlert
+                        message={message}
                         action={() => router.push(`/product/${responsePost?.id}`)}
                         textButon='Ver producto'
+                        variant={isError ? 'destructive': 'success'}
                         noTimeOut
-                    />}
+                        buttonApply={!isError}
+                    />)}
 
             </CustomCardForm>
 

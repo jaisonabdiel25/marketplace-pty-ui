@@ -2,13 +2,24 @@ import { ProductResponse, RequestProduct } from '@/interfaces/Products';
 import { GlobalResponse } from '@/interfaces/global';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 
 export const useServicesProductAction = () => {
 
+    const [isError, setIsError] = useState(false);
+    const [message, setMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false)
+
+    const resetStates = () => {
+        setIsError(false);
+        setMessage('');
+        setIsSuccess(false);
+    }
+
     const router = useRouter();
     const createProductApi = async (body: FormData, method: string): Promise<GlobalResponse<ProductResponse>> => {
-
+        resetStates();
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const url = `${apiUrl}/products`;
         const token = Cookies.get('token') ?? '';
@@ -22,8 +33,12 @@ export const useServicesProductAction = () => {
 
         }).then((response) => {
             if (response.ok) {
+                setIsSuccess(true);
+                setMessage('Producto creado con éxito');
                 return response.json();
             }else{
+                setIsError(true);
+                setMessage('Error al crear el producto');
                 if (response.status === 401) {
                     return router.push('/login');
                 }
@@ -37,6 +52,8 @@ export const useServicesProductAction = () => {
     }
 
     const updateProductApi = async (id: string,body: RequestProduct, method: string): Promise<GlobalResponse<ProductResponse>> => {
+
+        resetStates();
 
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const url = `${apiUrl}/products/${id}`;
@@ -52,8 +69,12 @@ export const useServicesProductAction = () => {
 
         }).then((response) => {
             if (response.ok) {
+                setMessage('Producto actualizado con éxito');
+                setIsSuccess(true);
                 return response.json();
             }else{
+                setIsError(true);
+                setMessage('Error al actualizar el producto');
                 if (response.status === 401) {
                     return router.push('/login');
                 }
@@ -68,5 +89,8 @@ export const useServicesProductAction = () => {
     return {
         createProductApi,
         updateProductApi,
+        isError,
+        message,
+        isSuccess
     }
 }
