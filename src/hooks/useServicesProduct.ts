@@ -1,28 +1,23 @@
 
-import { cookies } from 'next/headers';
-import { jwtDecode } from "jwt-decode";
-import { UserInfo } from '@/interfaces/Auth';
-import { Category } from '@/interfaces/Products';
-import { GlobalResponse } from '@/interfaces/global';
+import { ProductResponse } from '@/interfaces/Products';
+import { useState } from 'react';
 
-export const useServicesProduct = () => {
+interface Props {
+    initialProduct?: ProductResponse[]
+
+}
+export const useServicesProduct = ({ initialProduct }: Props) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-    const getToken = (): string => {
-        const cookiesStore = cookies();
-        const token = cookiesStore.get('token');
-        return token?.value ?? '';
-    }
+    const [productDetail, setProductDetail] = useState(initialProduct as ProductResponse[])
 
     const fetchApi = async (url: string, body = null, method = 'GET') => {
 
-        const token = getToken();
 
         const response = await fetch(url, {
             method,
             headers: {
                 "Content-Type": "application/json",
-                "bearer": token
             },
             body: body ? JSON.stringify(body) : undefined,
         })
@@ -40,27 +35,13 @@ export const useServicesProduct = () => {
         return await response;
     }
 
-    const getProducts = async <R>(): Promise<R> => {
-        return await fetchApi(`${apiUrl}/products`);
-    }
-
-    const getProduct = async <R>(id: string): Promise<R> => {
-        return await fetchApi(`${apiUrl}/products/${id}`);
-    }
-
-    const decodedToken =  (): UserInfo => {
-        const token = getToken();
-       return jwtDecode<UserInfo>(token)
-    }
-
-    const getCategories = async(): Promise<GlobalResponse<Category[]>> => {
-        return await fetchApi(`${apiUrl}/categories`);
+    const getProducts = async (page: number): Promise<void> => {
+        const result = await fetchApi(`${apiUrl}/products?page=${page}&size=10`);
+        setProductDetail(result);
     }
 
     return {
         getProducts,
-        getProduct,
-        decodedToken,
-        getCategories,
+        productDetail
     }
 }

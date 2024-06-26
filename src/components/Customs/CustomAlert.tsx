@@ -10,9 +10,10 @@ interface Props {
     textButon: string;
     variant?: Variant;
     noTimeOut?: boolean;
+    buttonApply?: boolean;
 }
 export function CustomAlert(props: Props) {
-    const { message, action, textButon, noTimeOut = false, variant = 'success' } = props;
+    const { message, action, textButon, noTimeOut = false, variant = 'success', buttonApply = true } = props;
 
     const [isVisible, setIsVisible] = useState(true);
 
@@ -33,7 +34,8 @@ export function CustomAlert(props: Props) {
                     <AlertDescription>
                         {message}
                     </AlertDescription>
-                    <Button variant="secondary" onClick={() => action()} className="mx-2">{textButon}</Button>
+                    {buttonApply && <Button variant="secondary" onClick={() => action()} className="mx-2">{textButon}</Button>}
+                    
                 </Alert>
             )}
         </>
