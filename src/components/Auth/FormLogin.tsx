@@ -7,10 +7,7 @@ import { Loader2 } from "lucide-react";
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
 
-import {
-  validateFormikField,
-  validateFormikFieldMessage,
-} from "@/utils/validationFormik";
+import { validateFormikField, validateFormikFieldMessage, } from "@/utils/validationFormik";
 import { useFormik } from "formik";
 import { useServices } from "@/hooks/useServices";
 import { useEffect, useState } from "react";
@@ -25,7 +22,7 @@ export const FormLogin = () => {
 
   const { fetchLogin, isError, isLoading, isSuccess } = useServices<PropsFormikLogin, ResponseAuth>();
   const { toast } = useToast();
-  const setToken = useUserStore (state => state.setToken);
+  const setToken = useUserStore(state => state.setToken);
 
   const formik = useFormik<PropsFormikLogin>({
     initialValues: {

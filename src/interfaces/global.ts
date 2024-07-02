@@ -1,6 +1,7 @@
 export interface GlobalResponse<T>{
     data: T;
     message?: string
+    totalItems?: number;
 }
 
 export interface GlobalSelect<T>{

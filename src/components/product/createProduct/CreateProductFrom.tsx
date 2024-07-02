@@ -8,11 +8,11 @@ import { Input } from '@/components/ui/input'
 import { validateFormikField, validateFormikFieldMessage } from '@/utils/validationFormik'
 import { Category, ProductResponse, PropsFormikProducts, RequestProduct } from '@/interfaces/Products'
 import { useServicesProductAction } from '@/hooks/useServicesProductAction'
-import { GlobalResponse, GlobalSelect } from '@/interfaces/global'
 import { CustomCardForm } from '@/components/Customs/CustomCardForm'
 import { CustomAlert } from '@/components/Customs/CustomAlert'
 import { ProductSchema } from '@/schemas/ProductSchema'
 import { CustomSelect } from '@/components/Customs/CustomSelect'
+import CustomLoading from '@/components/Customs/CustomLoading'
 
 interface Props {
     categories: Category[]
@@ -22,6 +22,8 @@ interface Props {
 export const CreateProductFrom = (props: Props) => {
 
     const { product, categories } = props
+    const [responsePost, setResponsePost] = useState<ProductResponse>(null as unknown as ProductResponse);
+    const [isLoading, setIsLoading] = useState(false);
 
     const selectCategories = useMemo(() => {
         return categories?.map(item => ({
@@ -32,8 +34,8 @@ export const CreateProductFrom = (props: Props) => {
     }, [categories])
 
     const router = useRouter();
-    const { createProductApi, updateProductApi, message, isError, isSuccess } = useServicesProductAction();
-    const [responsePost, setResponsePost] = useState<ProductResponse>(null as unknown as ProductResponse);
+    const { createProductApi, updateProductApi, message, isError, isSuccess } = useServicesProductAction({ setIsLoading });
+
 
     const initialValues = (): PropsFormikProducts => {
 
@@ -102,13 +104,17 @@ export const CreateProductFrom = (props: Props) => {
     }
 
     useEffect(() => {
-        console.log(isSuccess)
-    }, [isSuccess])
+        if (isSuccess && (responsePost)) {
+            router.push(`/product/${responsePost?.id}`)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSuccess, responsePost])
 
 
     return (
         <div className='flex justify-center w-full mt-20'>
-            <CustomCardForm onAction={() => formik.handleSubmit()} onCancel={() => formik.resetForm()} disabledAction={validateImageLoad()}>
+            <CustomLoading open={isLoading} />
+            <CustomCardForm labelButton={formik.values.id ? 'Actualizar' : 'Crear'} onAction={() => formik.handleSubmit()} onCancel={() => formik.resetForm()} disabledAction={validateImageLoad()}>
                 <form>
                     <div className="grid w-full items-center gap-4">
                         <div className='flex gap-4 my-2'>
@@ -177,22 +183,21 @@ export const CreateProductFrom = (props: Props) => {
                                 }}
                                 onBlur={formik.handleBlur}
                                 multiple
-                                accept='image/*'
+                                accept=".jpg, .png, .jpeg"
                                 error={validateImageLoad()}
                                 errorMessage={"las imagenes son requeridas"}
                             />
                         </div>
                     </div>
                 </form>
-                {isSuccess &&
-                    (<CustomAlert
-                        message={message}
-                        action={() => router.push(`/product/${responsePost?.id}`)}
-                        textButon='Ver producto'
-                        variant={isError ? 'destructive': 'success'}
-                        noTimeOut
-                        buttonApply={!isError}
-                    />)}
+                {isSuccess && (<CustomAlert
+                    message={message}
+                    action={() => router.push(`/product/${formik.values.id}`)}
+                    textButon='Ver producto'
+                    variant={isError ? 'destructive' : 'success'}
+                    noTimeOut
+                    buttonApply={!isError}
+                />)}
 
             </CustomCardForm>
 

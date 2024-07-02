@@ -1,13 +1,13 @@
 'use client';
 import Cookies from 'js-cookie';
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { ProductResponse } from "@/interfaces/Products"
 import { Button } from "../ui/button"
 import { UserInfo } from '@/interfaces/Auth';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useCartStore } from '@/store/card.store';
 
 interface Props {
     product: ProductResponse
@@ -15,11 +15,19 @@ interface Props {
 
 export type customJwtPayload = JwtPayload & { data: UserInfo };
 
-const ProductDetailAction = ({ product }: Props) => {
+export const ProductDetailAction = ({ product }: Props) => {
+
+    const addProductToCart = useCartStore(state => state.addProductTocart);
 
     const router = useRouter()
 
-    const token = Cookies.get('token')
+    const [token, seTtoken] = useState<string | undefined>('')
+
+    useEffect(() => {
+        // Esto asegura que el token solo se establezca en el cliente
+        const cookieToken = Cookies.get('token');
+        seTtoken(cookieToken);
+    }, []);
 
     const isAuth = useMemo(() => {
         if (!token) return false;
@@ -45,9 +53,14 @@ const ProductDetailAction = ({ product }: Props) => {
     const renderButtonSold = () => {
         return (
             product.createBy?.id === tokenDecoded?.id
-            
+
                 ? <Button onClick={() => router.push(`/product/${product.id}/edit`)} className='mt-4 w-full'>Editar</Button>
-                : <Button className='mt-4 w-full'>Comprar</Button>
+                :
+                <div className='w-full'>
+                    <Button onClick={() => addProductToCart(product)} variant={'outline'} className='w-full'>Agregar al carrito</Button>
+                    <Button className='w-full mt-2'>Comprar Ahora</Button>
+
+                </div>
         )
     }
 
@@ -71,4 +84,3 @@ const ProductDetailAction = ({ product }: Props) => {
     )
 }
 
-export default ProductDetailAction;

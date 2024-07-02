@@ -5,7 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 
-export const useServicesProductAction = () => {
+interface Props {
+    setIsLoading: (value: boolean) => void;
+}
+export const useServicesProductAction = (props: Props) => {
+
+    const { setIsLoading } = props;
 
     const [isError, setIsError] = useState(false);
     const [message, setMessage] = useState('');
@@ -19,6 +24,7 @@ export const useServicesProductAction = () => {
 
     const router = useRouter();
     const createProductApi = async (body: FormData, method: string): Promise<GlobalResponse<ProductResponse>> => {
+        setIsLoading(true);
         resetStates();
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const url = `${apiUrl}/products`;
@@ -36,7 +42,7 @@ export const useServicesProductAction = () => {
                 setIsSuccess(true);
                 setMessage('Producto creado con éxito');
                 return response.json();
-            }else{
+            } else {
                 setIsError(true);
                 setMessage('Error al crear el producto');
                 if (response.status === 401) {
@@ -48,11 +54,13 @@ export const useServicesProductAction = () => {
                 console.log(error)
             })
 
-        return await response;
+        setIsLoading(false);
+
+        return response;
     }
 
-    const updateProductApi = async (id: string,body: RequestProduct, method: string): Promise<GlobalResponse<ProductResponse>> => {
-
+    const updateProductApi = async (id: string, body: RequestProduct, method: string): Promise<GlobalResponse<ProductResponse>> => {
+        setIsLoading(true);
         resetStates();
 
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -72,7 +80,7 @@ export const useServicesProductAction = () => {
                 setMessage('Producto actualizado con éxito');
                 setIsSuccess(true);
                 return response.json();
-            }else{
+            } else {
                 setIsError(true);
                 setMessage('Error al actualizar el producto');
                 if (response.status === 401) {
@@ -84,7 +92,8 @@ export const useServicesProductAction = () => {
                 console.log(error)
             })
 
-        return await response;
+        setIsLoading(false);
+        return response;
     }
     return {
         createProductApi,

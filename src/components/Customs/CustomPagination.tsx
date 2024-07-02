@@ -6,14 +6,14 @@ import Stack from '@mui/material/Stack';
 
 interface Props {
     onAction: (page: number) => Promise<void>;
+    totalItems: number;
 }
 export const CustomPagination = (props: Props) => {
 
-    const { onAction } = props;
+    const { onAction, totalItems } = props;
 
     const [page, setPage] = React.useState(1);
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        console.log(value)
         setPage(value);
         onAction(value);
     };
@@ -21,7 +21,7 @@ export const CustomPagination = (props: Props) => {
     return (
         <>
             <Stack spacing={2}>
-                <Pagination count={10} variant="outlined" page={page} onChange={handleChange} shape="rounded" />
+                <Pagination count={Math.ceil(totalItems / 10)} variant="outlined" page={page} onChange={handleChange} shape="rounded" />
             </Stack>
         </>
     );

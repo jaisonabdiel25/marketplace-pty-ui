@@ -2,19 +2,19 @@
 import { useServicesProduct } from '@/hooks/useServicesProduct';
 import { ProductItem } from './ProductItem';
 import { CustomPagination } from '../Customs/CustomPagination';
-import { useEffect } from 'react';
 import { ProductResponse } from '@/interfaces/Products';
+import { GlobalResponse } from '@/interfaces/global';
 
 
 interface Props {
-  initialProduct:  ProductResponse[]
+  initialProduct: GlobalResponse<ProductResponse[]>
 }
 
 export const ProductGrid = (props: Props) => {
 
   const { initialProduct } = props;
 
-  const { getProducts, productDetail } = useServicesProduct({initialProduct});
+  const { getProducts, productDetail } = useServicesProduct({ initialProduct });
 
 
   return (
@@ -22,7 +22,7 @@ export const ProductGrid = (props: Props) => {
 
 
       <div className='flex flex-wrap justify-center gap-8 my-8' >
-        {productDetail?.length > 0 && productDetail.map((product) => (
+        {productDetail?.data?.length > 0 && productDetail.data.map((product) => (
           <>
             <ProductItem key={product.id} product={product} />
           </>
@@ -31,8 +31,7 @@ export const ProductGrid = (props: Props) => {
       </div>
 
       <div className='flex justify-center mx-8 my-8'>
-      <CustomPagination onAction={(value) => getProducts(value)} />
-
+        <CustomPagination totalItems={productDetail?.totalItems ?? 0} onAction={(value) => getProducts(value)} />
       </div>
     </div>
 

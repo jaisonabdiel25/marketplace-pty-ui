@@ -5,6 +5,7 @@ import { useState } from "react";
 import { FormLogin } from "./FormLogin";
 import { FormRegister } from "./FormRegister";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
 
 
 enum Tab {
@@ -18,9 +19,13 @@ export const LoginAuth = () => {
   return (
     <div className="h-screen flex justify-center items-center bg-gray-200">
       <div className="flex gap-20 shadow-2xl p-10 bg-white rounded-sm min-h-[500px]">
+
         <div className="flex justify-center items-center">
-          <Image priority={false} src="./logo.svg" alt="logo" width={300} height={300} />
+          <Link href="/" className="hover:underline cursor-pointer">
+            <Image priority={false} src="/logo.svg" alt="logo" width={300} height={300} />
+          </Link>
         </div>
+
 
         <Tabs defaultValue={register} className="flex flex-col">
 

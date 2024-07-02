@@ -16,7 +16,6 @@ export const isExpired = () => {
     const decodedToken = jwtDecode<customJwtPayload>(token);
     const currentDate = new Date();
 
-    console.log('decodedToken', decodedToken)
     // JWT exp is in seconds
     if (decodedToken.exp && decodedToken.exp * 1000 < currentDate.getTime()) {
         return true;

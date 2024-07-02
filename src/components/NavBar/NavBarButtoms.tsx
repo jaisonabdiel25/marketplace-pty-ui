@@ -5,23 +5,32 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useUserStore } from "@/store/user.store";
 import { Button } from "../ui/button";
 import { UserInfo } from "@/interfaces/Auth";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Cookies from 'js-cookie';
 import { SheetSide } from "../Customs/CustomSheetSide";
+import { IoCartOutline } from "react-icons/io5";
+import { useCartStore } from "@/store/card.store";
+
 
 export type customJwtPayload = JwtPayload & { data: UserInfo };
 
-interface Props {
-    token?: string;
-}
-
-export const NavBarButtoms = ({ token }: Props) => {
+export const NavBarButtoms = () => {
 
     const tokenStorage = useUserStore(state => state.token);
     const setToken = useUserStore(state => state.setToken);
+    const totalItemsInCart = useCartStore((state) => state.getTotalItems());
 
-    const isExpired = () => {
+    const [token, seTtoken] = useState<string | undefined>(undefined)
+
+    useEffect(() => {
+        // Esto asegura que el token solo se establezca en el cliente
+        const cookieToken = Cookies.get('token');
+        seTtoken(cookieToken ?? tokenStorage);
+    }, [tokenStorage]);
+
+    const isExpired = useMemo(() => {
         if (!token && !tokenStorage) return true;
+
         const decodedToken = jwtDecode<customJwtPayload>(token ?? tokenStorage);
         const currentDate = new Date();
         // JWT exp is in seconds
@@ -30,7 +39,7 @@ export const NavBarButtoms = ({ token }: Props) => {
         } else {
             return false;
         }
-    }
+    }, [token, tokenStorage])
 
     const decodedToken = useMemo(() => {
         if (!token && !tokenStorage) return null
@@ -39,15 +48,26 @@ export const NavBarButtoms = ({ token }: Props) => {
 
     return (
         <>
-            {!isExpired() ?
+            {!isExpired ?
                 <div className="flex items-center min-w-[200px] justify-between gap-8 mx-2">
-                    <span className="mx-4" >Hola {decodedToken?.data.name}</span>
+                    <h1 className="mx-4" >Hola {decodedToken?.data.name}</h1>
                     <Link href={'/product/new_product'}>
                         <Button
                             className="me-3 inline-block rounded px-4 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal"
                         >
                             Vender
                         </Button>
+                    </Link>
+
+                    <Link href={"/cart"} className="mx-2">
+                        <div className="relative">
+                            {
+                                <h1 className="fade-in absolute text-xs px-1 rounded-full font-bold -top-2 -right-2 bg-blue-700 text-white">
+                                    {totalItemsInCart}
+                                </h1>
+                            }
+                            <IoCartOutline className="w-5 h-5" />
+                        </div>
                     </Link>
 
                     <Link href={'/login'}>

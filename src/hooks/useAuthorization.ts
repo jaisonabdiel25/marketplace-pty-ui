@@ -1,34 +1,50 @@
 
-import { cookies } from 'next/headers';
+
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { UserInfo } from '@/interfaces/Auth';
+import { useEffect, useMemo, useState } from 'react';
+import { useUserStore } from '@/store/user.store';
+import Cookies from 'js-cookie';
+import { useRouter } from "next/navigation";
 
 export type customJwtPayload = JwtPayload & { data: UserInfo };
 
 export const useAuthorization = () => {
 
-    const validToken = (): boolean => {
-        const cookiesStore = cookies();
-        const token = cookiesStore.get('token');
+    const [token, seTtoken] = useState<string | undefined>(undefined);
+    const router = useRouter();
 
-        if (!token) return false;
+    const tokenStorage = useUserStore(state => state.token);
+    const setToken = useUserStore(state => state.setToken);
 
-        const decodedToken = jwtDecode<customJwtPayload>(token.value);
+    const resetAuth = () => {
+        setToken('');
+        Cookies.remove('token');
+        router.push('/login');
+    }
+
+    useEffect(() => {
+        // Esto asegura que el token solo se establezca en el cliente
+        const cookieToken = Cookies.get('token');
+        seTtoken(cookieToken ?? tokenStorage);
+    }, [tokenStorage]);
+
+    const isExpired = useMemo(() => {
+        if (!token && !tokenStorage) return true;
+
+        const decodedToken = jwtDecode<customJwtPayload>(token ?? tokenStorage);
         const currentDate = new Date();
-
+        // JWT exp is in seconds
         if (decodedToken.exp && decodedToken.exp * 1000 < currentDate.getTime()) {
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
-    }
-
-    const resetAuthorization = () => {
-        const cookiesStore = cookies();
-        cookiesStore
-    }
+    }, [token, tokenStorage])
 
     return {
-        validToken
+        isExpired,
+        resetAuth,
+        token,
     }
 }

@@ -13,9 +13,10 @@ interface Props {
     onAction: () => void;
     onCancel: () => void;
     disabledAction?: boolean
+    labelButton: string
 }
 
-export const CustomCardForm = ({ children, onAction, onCancel, disabledAction = false }: Props) => {
+export const CustomCardForm = ({ children, onAction, onCancel, labelButton, disabledAction = false }: Props) => {
     return (
         <div>
 
@@ -33,7 +34,7 @@ export const CustomCardForm = ({ children, onAction, onCancel, disabledAction = 
                         disabled={disabledAction}
                         onClick={() => onAction()}
                     >
-                        Crear
+                        {labelButton}
                     </Button>
                 </CardFooter>
             </Card>

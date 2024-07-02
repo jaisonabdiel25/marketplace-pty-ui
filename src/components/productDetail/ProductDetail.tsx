@@ -1,13 +1,11 @@
 
 import Image from 'next/image'
-import dynamic from 'next/dynamic'
 
 import { ProductResponse } from '@/interfaces/Products'
 import { Card, CardContent } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, } from "@/components/ui/carousel"
-import { Suspense } from 'react'
+import { ProductDetailAction } from './ProductDetailAction'
 
-const DynamicProductDetailAction = dynamic(() => import("./ProductDetailAction"), { ssr: false });
 
 interface Props {
     product: ProductResponse
@@ -22,10 +20,10 @@ export const ProductDetail = ({ product }: Props) => {
                     <CarouselContent>
                         {product.images?.map((image) => (
                             <CarouselItem key={image.id}>
-                                <div key={image.id}>
-                                    <Card key={image.id}>
-                                        <CardContent key={image.id} className="flex aspect-square items-center justify-center p-6">
-                                            <Image key={image.id} src={image.url} width={500} height={500} alt={product.name} className='max-h-[500px] object-contain' />
+                                <div>
+                                    <Card >
+                                        <CardContent className="flex aspect-square items-center justify-center p-6">
+                                            <Image src={image.url} width={500} height={500} alt={product.name} className='max-h-[500px] object-contain' />
                                         </CardContent>
                                     </Card>
                                 </div>
@@ -37,9 +35,9 @@ export const ProductDetail = ({ product }: Props) => {
                 </Carousel>
             </div>
 
-            <Suspense fallback={<div className='w-full h-screen flex items-center justify-center bg-red-800'> cargando</div>} >
-                <DynamicProductDetailAction product={product} />
-            </Suspense>
+
+            <ProductDetailAction product={product} />
+
         </div>
     )
 }

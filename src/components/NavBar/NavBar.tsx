@@ -2,14 +2,10 @@ import Image from "next/image"
 import { Input } from "../ui/input"
 import { NavBarButtoms } from "./NavBarButtoms"
 import Link from "next/link"
-import { cookies } from 'next/headers';
 import { SheetSide } from "../Customs/CustomSheetSide";
 
 
 export const NavBar = () => {
-
-    const cookieStore = cookies();
-    const token = cookieStore.get('token')?.value;
 
     return (
         <>
@@ -26,7 +22,7 @@ export const NavBar = () => {
 
                     <div className="block border-0 bg-transparent px-2 text-black/50 hover:no-underline hover:shadow-none focus:no-underline focus:shadow-none focus:outline-none focus:ring-0 dark:text-neutral-200 lg:hidden">
 
-                        <SheetSide side={'right'} />
+                        <SheetSide side={'right'}  />
                     </div>
 
                     <div
@@ -38,7 +34,7 @@ export const NavBar = () => {
                             <Input className="text-bold" placeholder="Buscar productos por nombre, descripción..." />
                         </div>
                         <div className="px-2">
-                            <NavBarButtoms token={token} />
+                            <NavBarButtoms />
                         </div>
                     </div>
 

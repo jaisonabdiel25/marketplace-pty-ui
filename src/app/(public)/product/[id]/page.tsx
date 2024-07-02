@@ -29,7 +29,7 @@ const ProductPage = async ({ params }: { params: { id: string } }) => {
 
     return (
         <>
-            {product && <ProductDetail product={product} />}
+            <ProductDetail product={product} />
         </>
     )
 }

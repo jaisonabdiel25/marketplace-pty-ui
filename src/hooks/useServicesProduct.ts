@@ -1,15 +1,16 @@
 
 import { ProductResponse } from '@/interfaces/Products';
+import { GlobalResponse } from '@/interfaces/global';
 import { useState } from 'react';
 
 interface Props {
-    initialProduct?: ProductResponse[]
+    initialProduct?: GlobalResponse<ProductResponse[]>
 
 }
 export const useServicesProduct = ({ initialProduct }: Props) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-    const [productDetail, setProductDetail] = useState(initialProduct as ProductResponse[])
+    const [productDetail, setProductDetail] = useState(initialProduct as GlobalResponse<ProductResponse[]>)
 
     const fetchApi = async (url: string, body = null, method = 'GET') => {
 
