@@ -13,6 +13,7 @@ import { CustomAlert } from '@/components/Customs/CustomAlert'
 import { ProductSchema } from '@/schemas/ProductSchema'
 import { CustomSelect } from '@/components/Customs/CustomSelect'
 import CustomLoading from '@/components/Customs/CustomLoading'
+import { useAuthorization } from '@/hooks/useAuthorization'
 
 interface Props {
     categories: Category[]
@@ -20,6 +21,8 @@ interface Props {
 }
 
 export const CreateProductFrom = (props: Props) => {
+
+    const { decodedToken } = useAuthorization();
 
     const { product, categories } = props
     const [responsePost, setResponsePost] = useState<ProductResponse>(null as unknown as ProductResponse);
@@ -114,7 +117,14 @@ export const CreateProductFrom = (props: Props) => {
     return (
         <div className='flex justify-center w-full mt-20'>
             <CustomLoading open={isLoading} />
-            <CustomCardForm labelButton={formik.values.id ? 'Actualizar' : 'Crear'} onAction={() => formik.handleSubmit()} onCancel={() => formik.resetForm()} disabledAction={validateImageLoad()}>
+            <CustomCardForm
+                labelButton={formik.values.id ? 'Actualizar' : 'Crear'}
+                onAction={() => formik.handleSubmit()}
+                onCancel={() => formik.resetForm()}
+                disabledAction={validateImageLoad() || !decodedToken?.active}
+                description={formik.values.id ? 'Edita tu producto' : 'Crea un nuevo producto'}
+                title='Pon a la venta tu producto'
+            >
                 <form>
                     <div className="grid w-full items-center gap-4">
                         <div className='flex gap-4 my-2'>
@@ -198,6 +208,16 @@ export const CreateProductFrom = (props: Props) => {
                     noTimeOut
                     buttonApply={!isError}
                 />)}
+
+                {!decodedToken?.active &&
+                    <CustomAlert
+                        message='Tu cuenta no esta activa, por favor verifica tu correo'
+                        variant='destructive'
+                        textButon='Entendido'
+                        noTimeOut
+                        action={() => { router.push('/') }}
+                    />
+                }
 
             </CustomCardForm>
 

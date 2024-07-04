@@ -56,10 +56,10 @@ export const ProductDetailAction = ({ product }: Props) => {
 
                 ? <Button onClick={() => router.push(`/product/${product.id}/edit`)} className='mt-4 w-full'>Editar</Button>
                 :
-                <div className='w-full'>
-                    <Button onClick={() => addProductToCart(product)} variant={'outline'} className='w-full'>Agregar al carrito</Button>
-                    <Button className='w-full mt-2'>Comprar Ahora</Button>
-
+                <div className='w-full flex flex-col justify-center'>
+                    <Button disabled={!tokenDecoded.active} onClick={() => addProductToCart(product, tokenDecoded.id)} variant={'outline'} className='w-full'>Agregar al carrito</Button>
+                    <Button disabled={!tokenDecoded.active} className='w-full mt-2 mb-8'>Comprar Ahora</Button>
+                    {!tokenDecoded.active && <span className='font-light text-sm'>Tu cuenta no se encuentra activa, contacta con soporte para activarla</span>}
                 </div>
         )
     }

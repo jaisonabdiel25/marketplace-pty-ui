@@ -25,4 +25,5 @@ export interface UserInfo {
     active: boolean;
     phone: string;
     img: string;
+    description?: string;
 }

@@ -12,6 +12,7 @@ export interface ProductResponse {
     images: Image[];
     createBy?: CreateBy;
     category?: Category;
+    userCartId?: string;
 }
 
 export interface Image {

@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import CustomLoading from "../Customs/CustomLoading";
+import { Skeleton } from "../ui/skeleton";
 
 const createOrder = async (request: OrderRequest, token: string, setIsLoading: (value: boolean) => void) => {
   setIsLoading(true);
@@ -46,12 +47,12 @@ const createOrder = async (request: OrderRequest, token: string, setIsLoading: (
 
 export const OrderSummary = () => {
 
-  const { token } = useAuthorization();
+  const { token, decodedToken } = useAuthorization();
   const [isLoading, setIsLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  const productsInCart = useCartStore(state => state.cart);
-  const { itemsInCart, subTotal, tax, total } = useCartStore((state) => state.getSummaryInformation());
+  const productsInCart = useCartStore(state => state.getCartToUser(decodedToken?.id ?? ''));
+  const { itemsInCart, subTotal, tax, total } = useCartStore((state) => state.getSummaryInformation(decodedToken?.id ?? ''));
   const clearCart = useCartStore(state => state.clearCart);
 
   const router = useRouter();
@@ -66,7 +67,7 @@ export const OrderSummary = () => {
     const { ok } = await createOrder(request, token!, setIsLoading);
 
     if (ok) {
-      clearCart();
+      clearCart(decodedToken?.id ?? '');
       router.push('/orders');
     }
   }
@@ -76,7 +77,24 @@ export const OrderSummary = () => {
   }, []);
 
 
-  if (!loaded) return <p>Loading...</p>;
+  if (!loaded) return (
+    <div>
+      <div className="space-y-2">
+        <Skeleton className="h-6 w-[350px]" />
+        <Skeleton className="h-4 w-[200px]" />
+        <Skeleton className="h-4 w-[250px]" />
+        <div className="flex justify-between">
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[250px]" />
+        </div>
+
+      </div>
+      <Skeleton className="mt10 h-8 w-full rounded-md" />
+    </div>
+  )
 
   return (
 
@@ -99,9 +117,11 @@ export const OrderSummary = () => {
 
 
       </div>
-      <Button onClick={() => {
-        processOrder()
-      }} className="mt-5 mb-2 w-full">
+      <Button
+        disabled={productsInCart.length === 0}
+        onClick={() => {
+          processOrder()
+        }} className="mt-5 mb-2 w-full">
         Crear orden
       </Button>
     </>

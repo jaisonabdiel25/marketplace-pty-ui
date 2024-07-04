@@ -53,7 +53,6 @@ export const PayPalButton = ({ orderId, amount }: Props) => {
 
     const details = await actions.order?.capture();
 
-    console.log({ details })
     if (!details) return;
 
     const body: PaymentSale = {

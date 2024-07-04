@@ -14,16 +14,18 @@ interface Props {
     onCancel: () => void;
     disabledAction?: boolean
     labelButton: string
+    title: string;
+    description: string;
 }
 
-export const CustomCardForm = ({ children, onAction, onCancel, labelButton, disabledAction = false }: Props) => {
+export const CustomCardForm = ({title, description, children, onAction, onCancel, labelButton, disabledAction = false }: Props) => {
     return (
         <div>
 
             <Card className="bg-white">
                 <CardHeader>
-                    <CardTitle>Vende tu producto</CardTitle>
-                    <CardDescription>llena cada uno de los campos para poner a la venta tu producto</CardDescription>
+                    <CardTitle>{title}</CardTitle>
+                    <CardDescription>{description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     {children}

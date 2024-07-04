@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
+import Cookies from 'js-cookie';
 
 export const FormRegister = () => {
   const router = useRouter();
@@ -37,7 +38,7 @@ export const FormRegister = () => {
 
   useEffect(() => {
     if (isSuccess && dataLogin) {
-      localStorage.setItem('token', dataLogin.token);
+      Cookies.set('token', dataLogin.token);
       router.push('/dashboard');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

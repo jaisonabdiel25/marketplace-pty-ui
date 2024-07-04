@@ -10,6 +10,7 @@ const getProduct = async (id: string): Promise<ProductResponse> => {
         headers: {
             "Content-Type": "application/json",
         },
+        cache: 'no-cache',
     })
         .then((response) => {
             if (response.ok) {

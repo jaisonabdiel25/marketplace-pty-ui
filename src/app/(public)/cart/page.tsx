@@ -1,12 +1,6 @@
-import Link from 'next/link';
-
 import { CustomTitle } from '@/components/Customs/CustomTitle';
-import { ProductsInCart } from '@/components/Card/ProductsInCart';
 import { OrderSummary } from '@/components/Card/OrderSummary';
-import { Button } from '@/components/ui/button';
-
-
-
+import { CartdDetailToProducts } from '@/components/Card/CartdDetailToProducts';
 
 export default function CartPage() {
 
@@ -16,14 +10,7 @@ export default function CartPage() {
                 <CustomTitle title='Carrito' />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     {/* Carrito */}
-                    <div className="flex flex-col mt-5">
-                        <span className="text-xl">Agregar más items</span>
-                        <Link href="/" className="underline mb-5">
-                            Continúa comprando
-                        </Link>
-                        {/* Items */}
-                        <ProductsInCart />
-                    </div>
+                    <CartdDetailToProducts />
 
                     {/* Checkout - Resumen de orden */}
                     <div className="bg-white rounded-xl shadow-xl p-7 h-fit">

@@ -42,9 +42,15 @@ export const useAuthorization = () => {
         }
     }, [token, tokenStorage])
 
+    const decodedToken = useMemo(() => {
+        if (!token && !tokenStorage) return null
+        return jwtDecode<customJwtPayload>(token ?? tokenStorage).data;
+    }, [token, tokenStorage])
+
     return {
         isExpired,
         resetAuth,
         token,
+        decodedToken
     }
 }

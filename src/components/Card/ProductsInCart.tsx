@@ -4,34 +4,25 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCartStore } from '@/store/card.store';
 import { ProductImage } from '../Customs/ProductImage';
+import { useAuthorization } from '@/hooks/useAuthorization';
+import { ProductResponse } from '@/interfaces/Products';
 
 
 
-export const ProductsInCart = () => {
+interface Props {
+  productsInCart: ProductResponse[];
 
-  const removeProduct = useCartStore( state => state.removeProduct );
+}
+export const ProductsInCart = ({productsInCart}: Props) => {
 
-  const [loaded, setLoaded] = useState(false);
-  const productsInCart = useCartStore( state => state.cart );
-
-
-  useEffect(() => {
-    setLoaded(true) ;
-  },[]);
-
-
-
-
-  if( !loaded ) {
-    return <p>Loading...</p>
-  }
+  const removeProduct = useCartStore(state => state.removeProduct);
 
   return (
     <>
       {productsInCart.map((product) => (
-        <div key={ `${ product.id }`  } className="flex mb-5">
+        <div key={`${product.id}`} className="flex mb-5">
           <ProductImage
-            src={product.images[0].url }
+            src={product.images[0].url}
             width={100}
             height={100}
             style={{
@@ -43,16 +34,16 @@ export const ProductsInCart = () => {
           />
 
           <div>
-            <Link 
+            <Link
               className="hover:underline cursor-pointer"
-              href={ `/product/${ product.id } ` }>
+              href={`/product/${product.id} `}>
               {product.name}
             </Link>
-            
+
             <p>${product.price}</p>
 
-            <button 
-              onClick={ () => removeProduct(product) }
+            <button
+              onClick={() => removeProduct(product)}
               className="underline mt-3">Remover</button>
           </div>
         </div>

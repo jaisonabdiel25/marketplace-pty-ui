@@ -1,11 +1,21 @@
+'use client'
+
 import Image from "next/image"
 import { Input } from "../ui/input"
 import { NavBarButtoms } from "./NavBarButtoms"
 import Link from "next/link"
 import { SheetSide } from "../Customs/CustomSheetSide";
+import useDebounce from "@/utils/debounse";
+import { useProductStore } from "@/store/products.store"
 
 
 export const NavBar = () => {
+
+    const setSearch = useProductStore(state => state.setSearch);
+
+    const handleSearch = useDebounce(async (e, search, reason) => {
+        setSearch(search);
+      }, 1000);
 
     return (
         <>
@@ -21,7 +31,6 @@ export const NavBar = () => {
                     </Link>
 
                     <div className="block border-0 bg-transparent px-2 text-black/50 hover:no-underline hover:shadow-none focus:no-underline focus:shadow-none focus:outline-none focus:ring-0 dark:text-neutral-200 lg:hidden">
-
                         <SheetSide side={'right'}  />
                     </div>
 
@@ -31,7 +40,9 @@ export const NavBar = () => {
                         data-twe-collapse-item>
 
                         <div className="flex-1">
-                            <Input className="text-bold" placeholder="Buscar productos por nombre, descripción..." />
+                            <Input className="text-bold" placeholder="Buscar productos por nombre, descripción..." onChange={(e) => {
+                                handleSearch(e, e.target.value, 'search')
+                            }} />
                         </div>
                         <div className="px-2">
                             <NavBarButtoms />
